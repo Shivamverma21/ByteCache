@@ -4,4 +4,8 @@ project(ByteCache)
 set(CMAKE_CXX_STANDARD 20)
 
 add_executable(ByteCache main.cpp
-        Storage.cpp)
+        storage.cpp
+        server.cpp
+)
+
+target_link_libraries(ByteCache ws2_32)
