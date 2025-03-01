@@ -1,0 +1,3 @@
+C:/Users/hp/Desktop/ByteCache/cmake-build-debug/CMakeFiles/ByteCache.dir
+C:/Users/hp/Desktop/ByteCache/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/hp/Desktop/ByteCache/cmake-build-debug/CMakeFiles/rebuild_cache.dir
