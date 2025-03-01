@@ -36,9 +36,10 @@ void InteractWithClient(SOCKET clientSocket, vector<SOCKET>& clients) {
         if (tokens.empty()) {
             response = "Invalid command, you have entered an empty message\n";
         } else {
+            int defaultTTL=60; // 1 min
             string command = tokens[0];
             if (command == "SET" && tokens.size() >= 3) {
-                int ttl = (tokens.size() == 4) ? std::stoi(tokens[3]) : -1;
+                int ttl = (tokens.size() == 4) ? std::stoi(tokens[3]) : defaultTTL;
                 response=kv_store.create_key(tokens[1], tokens[2], ttl);
                 response += "\n";
             } else if (command == "GET" && tokens.size() == 2) {

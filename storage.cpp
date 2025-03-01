@@ -7,11 +7,15 @@ using namespace std;
 string storage::create_key(const std::string &key, const std::string &value, int ttl) {
   std::lock_guard<std::mutex> lock(mutex);
   cache[key] = value;
-  return "Key got created";
-
+  bool defaultTTL=true;
   if (ttl > 0) {
+    defaultTTL=false;
     ttlMap[key] = std::chrono::steady_clock::now() + std::chrono::seconds(ttl);
   }
+  if(defaultTTL) {
+    return "Key got created with default TTL : " + std::to_string(ttl);
+  }
+  return "Key got created with TTL : " + std::to_string(ttl);
 }
 
 std::string storage::read_key(const std::string &key) {
