@@ -1,0 +1,8 @@
+# Ignore CMake and Ninja build files
+cmake-build-debug/
+*.exe
+*.obj
+*.log
+*.ninja_deps
+*.ninja_log
+*.json
