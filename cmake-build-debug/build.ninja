@@ -55,8 +55,14 @@ build CMakeFiles/ByteCache.dir/main.cpp.obj: CXX_COMPILER__ByteCache_unscanned_D
   OBJECT_DIR = CMakeFiles\ByteCache.dir
   OBJECT_FILE_DIR = CMakeFiles\ByteCache.dir
 
-build CMakeFiles/ByteCache.dir/Storage.cpp.obj: CXX_COMPILER__ByteCache_unscanned_Debug C$:/Users/hp/Desktop/ByteCache/Storage.cpp || cmake_object_order_depends_target_ByteCache
-  DEP_FILE = CMakeFiles\ByteCache.dir\Storage.cpp.obj.d
+build CMakeFiles/ByteCache.dir/storage.cpp.obj: CXX_COMPILER__ByteCache_unscanned_Debug C$:/Users/hp/Desktop/ByteCache/storage.cpp || cmake_object_order_depends_target_ByteCache
+  DEP_FILE = CMakeFiles\ByteCache.dir\storage.cpp.obj.d
+  FLAGS = -g -std=gnu++20 -fdiagnostics-color=always
+  OBJECT_DIR = CMakeFiles\ByteCache.dir
+  OBJECT_FILE_DIR = CMakeFiles\ByteCache.dir
+
+build CMakeFiles/ByteCache.dir/server.cpp.obj: CXX_COMPILER__ByteCache_unscanned_Debug C$:/Users/hp/Desktop/ByteCache/server.cpp || cmake_object_order_depends_target_ByteCache
+  DEP_FILE = CMakeFiles\ByteCache.dir\server.cpp.obj.d
   FLAGS = -g -std=gnu++20 -fdiagnostics-color=always
   OBJECT_DIR = CMakeFiles\ByteCache.dir
   OBJECT_FILE_DIR = CMakeFiles\ByteCache.dir
@@ -69,9 +75,9 @@ build CMakeFiles/ByteCache.dir/Storage.cpp.obj: CXX_COMPILER__ByteCache_unscanne
 #############################################
 # Link the executable ByteCache.exe
 
-build ByteCache.exe: CXX_EXECUTABLE_LINKER__ByteCache_Debug CMakeFiles/ByteCache.dir/main.cpp.obj CMakeFiles/ByteCache.dir/Storage.cpp.obj
+build ByteCache.exe: CXX_EXECUTABLE_LINKER__ByteCache_Debug CMakeFiles/ByteCache.dir/main.cpp.obj CMakeFiles/ByteCache.dir/storage.cpp.obj CMakeFiles/ByteCache.dir/server.cpp.obj
   FLAGS = -g
-  LINK_LIBRARIES = -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
+  LINK_LIBRARIES = -lws2_32  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
   OBJECT_DIR = CMakeFiles\ByteCache.dir
   POST_BUILD = cd .
   PRE_LINK = cd .
