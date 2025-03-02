@@ -1,8 +1,10 @@
 #include "server.h"
 #include "storage.h"
+#include "pubSub.h"
 
 
 storage kv_store;
+pubSub pub_sub;
 
 bool Initialize() {
     WSADATA wsaData;
@@ -36,19 +38,46 @@ void InteractWithClient(SOCKET clientSocket, vector<SOCKET>& clients) {
         if (tokens.empty()) {
             response = "Invalid command, you have entered an empty message\n";
         } else {
-            int defaultTTL=60; // 1 min
+            int disabledTTL=-1;
             string command = tokens[0];
             if (command == "SET" && tokens.size() >= 3) {
-                int ttl = (tokens.size() == 4) ? std::stoi(tokens[3]) : defaultTTL;
-                response=kv_store.create_key(tokens[1], tokens[2], ttl);
+                string value = tokens[2];
+                for (size_t i = 3; i < tokens.size() - 1; i++) {
+                    value += " " + tokens[i];
+                }
+                int ttl = (tokens.size() > 3) ? std::stoi(tokens.back()) : disabledTTL;
+                response=kv_store.create_key(tokens[1], value, ttl);
                 response += "\n";
             } else if (command == "GET" && tokens.size() == 2) {
                 response = kv_store.read_key(tokens[1]) + "\n";
             } else if (command == "UPDATE" && tokens.size() == 3) {
-                response = kv_store.update_key(tokens[1], tokens[2]);
+                string value = tokens[2];
+                for (size_t i = 3; i < tokens.size() - 1; i++) {
+                    value += " " + tokens[i];
+                }
+                response = kv_store.update_key(tokens[1], value);
                 response += "\n";
             } else if (command == "DEL" && tokens.size() == 2) {
                 response = kv_store.delete_key(tokens[1]);
+                response += "\n";
+            } else if (command == "CREATE_CHANNEL" && tokens.size() == 2) {
+                response = pub_sub.create_channel(tokens[1],clientSocket);
+                response += "\n";
+            } else if (command == "SUBSCRIBE" && tokens.size() == 2) {
+                response = pub_sub.subscribe(tokens[1], clientSocket);
+                response += "\n";
+            } else if (command == "UNSUBSCRIBE" && tokens.size() == 2) {
+                response = pub_sub.unsubscribe(tokens[1], clientSocket);
+                response += "\n";
+            } else if (command == "PUBLISH" && tokens.size() >= 3) {
+                string value = tokens[2];
+                for (size_t i = 3; i < tokens.size(); i++) {
+                    value += " " + tokens[i];
+                }
+                response = pub_sub.publish(tokens[1], value,clientSocket);
+                response += "\n";
+            } else if (command == "ADD_PUBLISHER" && tokens.size() == 2) {
+                response = pub_sub.add_publishers(tokens[1],clientSocket);
                 response += "\n";
             } else {
                 response = "Invalid command\n";
