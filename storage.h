@@ -8,7 +8,7 @@ private:
     unordered_map<string, string> cache;
     unordered_map<string, chrono::steady_clock::time_point> ttlMap;
     queue<string> q;
-    mutex mtx; // Renamed from "mutex" to avoid naming conflict
+    mutex mtx;
 
 public:
     string create_key(const std::string &key, const std::string &value, int ttl = -1);

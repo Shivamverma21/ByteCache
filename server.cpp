@@ -21,7 +21,7 @@ void InteractWithClient(SOCKET clientSocket, vector<SOCKET>& clients) {
             printf("Receive failed (%d).\n", WSAGetLastError());
             break;
         } else {
-            buffer[bytesReceived] = '\0';  // Ensure null termination
+            buffer[bytesReceived] = '\0';
         }
         string message(buffer, bytesReceived);
         cout << "Message from " << message << endl;

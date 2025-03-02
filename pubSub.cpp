@@ -4,7 +4,7 @@
 using namespace std;
 
 string pubSub::create_channel(const std::string &channel, SOCKET client) {
-    lock_guard<mutex> lock(pubsub_mutex); // Thread safety
+    lock_guard<mutex> lock(pubsub_mutex);
 
     if (channels.find(channel) != channels.end()) {
         return "Channel already exists";
@@ -18,7 +18,6 @@ string pubSub::create_channel(const std::string &channel, SOCKET client) {
 }
 
 string pubSub::delete_channel(const std::string &channel) {
-    std::cout << "Deleting channel: " << channel << std::endl;
     channels.erase(channel);
     publications.erase(channel);
     subscriptions.erase(channel);
@@ -26,7 +25,7 @@ string pubSub::delete_channel(const std::string &channel) {
 }
 
 string pubSub::subscribe(const string &channel, SOCKET client) {
-    lock_guard<mutex> lock(pubsub_mutex); // Thread safety
+    lock_guard<mutex> lock(pubsub_mutex);
 
     if (channels.find(channel) == channels.end()) {
         return "Channel does not exist.";
@@ -43,7 +42,7 @@ string pubSub::subscribe(const string &channel, SOCKET client) {
 }
 
 string pubSub::unsubscribe(const std::string &channel, SOCKET client) {
-    lock_guard<mutex> lock(pubsub_mutex); // Thread safety
+    lock_guard<mutex> lock(pubsub_mutex);
 
     if (channels.find(channel) == channels.end()) {
         return "Channel does not exist.";
@@ -117,7 +116,7 @@ string pubSub::add_publishers(const string &channel, SOCKET client) {
 }
 
 string pubSub::remove_publishers(const std::string &channel, SOCKET client) {
-    lock_guard<mutex> lock(pubsub_mutex); // Thread safety
+    lock_guard<mutex> lock(pubsub_mutex);
 
     if (channels.find(channel) == channels.end()) {
         return "Channel does not exist.";
@@ -130,13 +129,9 @@ string pubSub::remove_publishers(const std::string &channel, SOCKET client) {
     auto it = std::find(publishers.begin(), publishers.end(), client);
     if (it != publishers.end()) {
         publishers.erase(it);
-        std::cout << "Publisher removed from channel: " << channel << std::endl;
-        std::cout << "Publisher empty hai ?: " << publishers.empty() << std::endl;
         if (publishers.empty()) {
-            cout << "No publishers for this channel." << std::endl;
             delete_channel(channel);
         }
-        std::cout << "uaha ?: " << endl;
         return "Remove publisher from channel: " + channel;
     }
 
