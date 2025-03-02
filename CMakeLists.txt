@@ -9,5 +9,11 @@ add_executable(ByteCache main.cpp
 )
 target_link_libraries(ByteCache ws2_32)
 
-add_executable(Clients Clients/client1.cpp)
-target_link_libraries(Clients ws2_32)
+add_executable(Client1 Client1/client1.cpp)
+target_link_libraries(Client1 ws2_32)
+
+add_executable(Client2 Client2/client2.cpp)
+target_link_libraries(Client2 ws2_32)
+
+add_executable(Client3 Client3/client3.cpp)
+target_link_libraries(Client3 ws2_32)
