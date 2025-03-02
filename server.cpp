@@ -79,6 +79,9 @@ void InteractWithClient(SOCKET clientSocket, vector<SOCKET>& clients) {
             } else if (command == "ADD_PUBLISHER" && tokens.size() == 2) {
                 response = pub_sub.add_publishers(tokens[1],clientSocket);
                 response += "\n";
+            } else if (command == "REMOVE_PUBLISHER" && tokens.size() == 2) {
+                response = pub_sub.remove_publishers(tokens[1],clientSocket);
+                response += "\n";
             } else {
                 response = "Invalid command\n";
             }

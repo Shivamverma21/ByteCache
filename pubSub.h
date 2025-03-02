@@ -20,4 +20,6 @@ public:
     string unsubscribe(const string &channel, SOCKET client);
     string publish(const string &channel, const std::string &message, SOCKET client);
     string add_publishers(const string &channel, SOCKET client);
+    string remove_publishers(const string &channel, SOCKET client);
+    string delete_channel(const string &channel);
 };

@@ -17,6 +17,14 @@ string pubSub::create_channel(const std::string &channel, SOCKET client) {
     return "Channel created successfully";
 }
 
+string pubSub::delete_channel(const std::string &channel) {
+    std::cout << "Deleting channel: " << channel << std::endl;
+    channels.erase(channel);
+    publications.erase(channel);
+    subscriptions.erase(channel);
+    return "Channel deleted as there is no publisher for : " + channel;
+}
+
 string pubSub::subscribe(const string &channel, SOCKET client) {
     lock_guard<mutex> lock(pubsub_mutex); // Thread safety
 
@@ -37,19 +45,19 @@ string pubSub::subscribe(const string &channel, SOCKET client) {
 string pubSub::unsubscribe(const std::string &channel, SOCKET client) {
     lock_guard<mutex> lock(pubsub_mutex); // Thread safety
 
-    if (subscriptions.find(channel) == subscriptions.end()) {
+    if (channels.find(channel) == channels.end()) {
         return "Channel does not exist.";
     }
 
     auto &subscribers = subscriptions[channel];
-    auto it = remove(subscribers.begin(), subscribers.end(), client);
 
-    if (it == subscribers.end()) {
-        return "Client not found in subscribers list.";
+    auto it = std::find(subscribers.begin(), subscribers.end(), client);
+    if (it != subscribers.end()) {
+        subscribers.erase(it);
+        return "Unsubscribed from channel: " + channel;
     }
 
-    subscribers.erase(it, subscribers.end());
-    return "Unsubscribed from channel: " + channel;
+    return "Client was not subscribed to the channel.";
 }
 
 string pubSub::publish(const std::string &channel, const std::string &message, SOCKET client) {
@@ -73,12 +81,16 @@ string pubSub::publish(const std::string &channel, const std::string &message, S
     // Send to all subscribers
     auto &subscribers = subscriptions[channel];
     for (auto it = subscribers.begin(); it != subscribers.end();) {
-        SOCKET client = *it;
-        int result = send(client, fullMessage.c_str(), fullMessage.size(), 0);
+        SOCKET subscriber = *it;
+        if (subscriber == client) {
+            ++it;
+            continue;
+        }
+        int result = send(subscriber, fullMessage.c_str(), fullMessage.size(), 0);
 
         if (result == SOCKET_ERROR) {
             std::cerr << "Failed to send to client " << client << ". Removing from subscribers." << std::endl;
-            it = subscribers.erase(it); // Remove disconnected client
+            it = subscribers.erase(it);
         } else {
             ++it;
         }
@@ -89,8 +101,6 @@ string pubSub::publish(const std::string &channel, const std::string &message, S
 
 string pubSub::add_publishers(const string &channel, SOCKET client) {
     lock_guard<mutex> lock(pubsub_mutex);
-
-    unsubscribe(channel,client);
 
     if (channels.find(channel) == channels.end()) {
         return "Channel does not exist.";
@@ -104,4 +114,31 @@ string pubSub::add_publishers(const string &channel, SOCKET client) {
 
     publishers.push_back(client);
     return "Publishers to channel: " + channel;
+}
+
+string pubSub::remove_publishers(const std::string &channel, SOCKET client) {
+    lock_guard<mutex> lock(pubsub_mutex); // Thread safety
+
+    if (channels.find(channel) == channels.end()) {
+        return "Channel does not exist.";
+    }
+
+    std::cout << "Removing publisher from channel: " << channel << std::endl;
+
+    auto &publishers = publications[channel];
+
+    auto it = std::find(publishers.begin(), publishers.end(), client);
+    if (it != publishers.end()) {
+        publishers.erase(it);
+        std::cout << "Publisher removed from channel: " << channel << std::endl;
+        std::cout << "Publisher empty hai ?: " << publishers.empty() << std::endl;
+        if (publishers.empty()) {
+            cout << "No publishers for this channel." << std::endl;
+            delete_channel(channel);
+        }
+        std::cout << "uaha ?: " << endl;
+        return "Remove publisher from channel: " + channel;
+    }
+
+    return "Client was not publishers to the channel.";
 }
