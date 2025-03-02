@@ -6,6 +6,7 @@ set(CMAKE_CXX_STANDARD 20)
 add_executable(ByteCache main.cpp
         storage.cpp
         server.cpp
+        pubSub.cpp
 )
 target_link_libraries(ByteCache ws2_32)
 
